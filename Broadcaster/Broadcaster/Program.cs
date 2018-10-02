@@ -80,11 +80,10 @@ namespace Broadcaster
                     {
                         Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram,
                         ProtocolType.Udp);
-
-                        IPAddress broadcast = IPAddress.Parse("192.168.1.255");
+                        
 
                         byte[] sendbuf = Encoding.UTF8.GetBytes("SEND_DIRECTORY_LISTING");
-                        IPEndPoint ep = new IPEndPoint(broadcast, DataPort.Broadcaster);
+                        IPEndPoint ep = new IPEndPoint(GetBroadcastAddress(), DataPort.Broadcaster);
 
                         CancelRequestToken.ThrowIfCancellationRequested();
                         s.SendTo(sendbuf, ep);
@@ -97,6 +96,32 @@ namespace Broadcaster
                     
                 }
             }, CancelRequestToken);
+        }
+
+        static IPAddress GetBroadcastAddress()
+        {
+            var myAddressBroadcast = Dns.GetHostEntryAsync((Dns.GetHostName()))
+                                                .Result
+                                                .AddressList
+                                                .Where(x => x.AddressFamily == AddressFamily.InterNetwork)
+                                                .Select(x => x)
+                                                .ToArray().FirstOrDefault();
+
+            if (myAddressBroadcast != null)
+            {
+                var oct = myAddressBroadcast.GetAddressBytes();
+                oct[3] = 255;
+
+                var IpString = String.Join(".", oct);
+
+                return IPAddress.Parse(IpString);
+            }
+            else
+            {
+                return IPAddress.Parse("192.168.1.255");
+            }
+
+            
         }
     }
 }

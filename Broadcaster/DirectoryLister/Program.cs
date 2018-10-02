@@ -78,7 +78,7 @@ namespace DirectoryLister
             {
                 client.Connect(Endpoint.Address, DataPort.Listener);
                 using (var nStream = client.GetStream())
-                {// The stream that handles communcation over the socket
+                {// The stream that handles communication over the socket
                     using (var writer = new StreamWriter(nStream, Encoding.UTF8))
                     {// The stream that handles communication between the socket and converting it to strings
                         writer.Write(builder.ToString());
