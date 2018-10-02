@@ -13,11 +13,11 @@ namespace Broadcaster
 {
     class Program
     {
-        static Task Broadcaster;
-        static Task Listener;
+        private static Task Broadcaster;
+        private static Task Listener;
 
-        static CancellationTokenSource StopWorkerSource = new CancellationTokenSource();
-        static CancellationToken CancelRequestToken
+        private static CancellationTokenSource StopWorkerSource = new CancellationTokenSource();
+        private static CancellationToken CancelRequestToken
         {
             get
             {
@@ -56,7 +56,7 @@ namespace Broadcaster
                                 using (var reader = new StreamReader(nStream, Encoding.UTF8))
                                 {
                                     var data = reader.ReadToEnd();
-                                    Console.WriteLine($"Client {soc.RemoteEndPoint.ToString()} said: \n{data}");
+                                    Console.WriteLine($"Client {((IPEndPoint)soc.RemoteEndPoint).Address} said: \n{data}");
                                 }
                             }
                         });
